@@ -431,7 +431,7 @@ elif cmd == '_download':
     # print out the download command, if running directly
     sh_cmd = ('curl '
               'https://raw.githubusercontent.com/serwy/shellctx/master/shellctx/ctx.py',
-              ' > ',
+              ' -o ',
               sys.argv[0]
               )
     if __name__ == '__main__':
