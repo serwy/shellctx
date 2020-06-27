@@ -142,6 +142,10 @@ This is useful when needing to dedicate a terminal to a particular context.
 A flag to increase verbosity. It is an integer value of `0`, `1`, or more.
 If undefined, it defaults to `0`.
 
+### `CTX_HOME`
+
+Set the directory containing the dictionaries and logs. If unset,
+it defaults to `~/.ctx/`.
 
 ## Implementation details
 

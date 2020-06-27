@@ -42,7 +42,15 @@ if verbose_flag:
 import datetime
 now = datetime.datetime.now().isoformat()
 
-ctx = os.path.expanduser('~/.ctx')
+
+ctx_home = os.environ.get('CTX_HOME', None)
+if ctx_home is None:
+    ctx = os.path.expanduser('~/.ctx')
+else:
+    if verbose_flag:
+        print('CTX_HOME=%s' % ctx_home, file=sys.__stderr__)
+    ctx = ctx_home
+
 os.makedirs(ctx, exist_ok=True)
 
 # grab the pointer name
@@ -55,6 +63,8 @@ else:
 
 
 if env_name:
+    if verbose_flag:
+        print('CTX_NAME=%s' % env_name, file=sys.__stderr__)
     name = env_name
 
 ctx_file = os.path.join(ctx, name + '.json')
@@ -119,6 +129,9 @@ if verbose_flag > 1:
          '    key:      %s\n' % repr(key),
          '    value:    %s\n' % repr(value)
          )
+    print(''.join(s), file=sys.__stderr__)
+
+    s = ('context home: %s\n' % ctx)
     print(''.join(s), file=sys.__stderr__)
 
 if cmd is None:
@@ -268,7 +281,9 @@ elif cmd == '_fullitems':
     x = sorted(everything, reverse=True)
     s = ('Using context ', color['blue'], name, color[''], '')
     if env_name:
-        s = s + (' set by CTX_NAME', )
+        s = s + (' (set by CTX_NAME)', )
+    if ctx_home:
+        s = s + ((' (from CTX_HOME=%s)' % ctx_home),)
     print(''.join(s))
     s = ('There are ', color['blue'], str(len(everything)), color[''], ' entries.\n')
     print(''.join(s))
