@@ -18,6 +18,8 @@ import os
 import sys
 import json
 
+__version__ = '0.1.2.dev0'
+
 # ANSI coloring
 color = {
     '': '\033[0m',  # reset
@@ -30,6 +32,13 @@ color = {
 if sys.platform.startswith('win'):
     color = dict.fromkeys(color.keys(), '')
 
+def _print_version():
+    s = ('shellctx version ',
+         color['red'],
+         __version__,
+         color['']
+         )
+    print(''.join(s), file=sys.__stderr__)
 
 env_name = os.environ.get('CTX_NAME')
 verbose_flag = int(os.environ.get('CTX_VERBOSE', 0))
@@ -37,6 +46,7 @@ verbose_flag = int(os.environ.get('CTX_VERBOSE', 0))
 
 if verbose_flag:
     print('CTX_VERBOSE=%i' % verbose_flag, file=sys.__stderr__)
+    _print_version()
 
 
 import datetime
@@ -413,6 +423,9 @@ elif cmd == '_delctx':
         os.remove(_ctx_file)
     if os.path.exists(_log_file):
         os.remove(_log_file)
+
+elif cmd == 'version':
+    _print_version()
 
 
 elif cmd in ['help', '-h']:
