@@ -1,7 +1,8 @@
 
 # shellctx
 
-Shell context helper for saving, recalling, and executing information.
+Shell context helper for saving, recalling, and executing information from
+a persistent dictionary.
 
 ## Why?
 
@@ -166,6 +167,9 @@ or
 If you just want the script directly, you can download and copy
 `shellctx/ctx.py` as `ctx` somewhere on your `$PATH` and apply `chmod +x`.
 The direct link is: https://raw.githubusercontent.com/serwy/shellctx/master/shellctx/ctx.py
+
+    curl  https://raw.githubusercontent.com/serwy/shellctx/master/shellctx/ctx.py > ctx
+    chmod +x ctx
 
 ## License
 
