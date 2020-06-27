@@ -31,6 +31,14 @@ if sys.platform.startswith('win'):
     color = dict.fromkeys(color.keys(), '')
 
 
+env_name = os.environ.get('CTX_NAME')
+verbose_flag = int(os.environ.get('CTX_VERBOSE', 0))
+
+
+if verbose_flag:
+    print('CTX_VERBOSE=%i' % verbose_flag, file=sys.__stderr__)
+
+
 import datetime
 now = datetime.datetime.now().isoformat()
 
@@ -45,8 +53,6 @@ if os.path.exists(name_file):
 else:
     name = 'main'
 
-env_name = os.environ.get('CTX_NAME')
-verbose_flag = int(os.environ.get('CTX_VERBOSE', 0))
 
 if env_name:
     name = env_name
@@ -72,7 +78,28 @@ def load_log():
     return log
 
 
-cmd = 'fullitems'
+
+def _print_args():
+    # debug, dump sys.argv
+    print('sys.argv[:]', file=sys.__stderr__)
+    for n, i in enumerate(sys.argv):
+        s = (color['red'],
+             '  %3i' % n,
+             color[''],
+             ' = ',
+             color['blue'],
+             repr(i),
+             color[''],
+             )
+        print(''.join(s), file=sys.__stderr__)
+
+
+if verbose_flag > 1:
+    _print_args()
+    print(file=sys.__stderr__)
+
+
+cmd = None
 key = None
 value = None
 
@@ -86,10 +113,24 @@ try:
 except IndexError:
     pass
 
+if verbose_flag > 1:
+    s = ('processed arguments:\n',
+         '    command:  %s\n' % repr(cmd),
+         '    key:      %s\n' % repr(key),
+         '    value:    %s\n' % repr(value)
+         )
+    print(''.join(s), file=sys.__stderr__)
+
+if cmd is None:
+    cmd = '_fullitems'
 
 need_store = False
 
-if cmd == 'setpath':
+
+if cmd == '_print':
+    _print_args()
+
+elif cmd == 'setpath':
     assert(key is not None)
 
     base = os.getcwd()
@@ -142,7 +183,7 @@ elif cmd in ['shell', 'dryshell']:
         color[''],
         )
     if verbose_flag:
-        print(''.join(s))
+        print(''.join(s), file=sys.__stderr__)
 
     if cmd == 'shell':
         os.system(sh_cmd)
@@ -163,7 +204,7 @@ elif cmd in ('exec', 'dryexec'):
         color[''],
         )
     if verbose_flag:
-        print(''.join(s))
+        print(''.join(s), file=sys.__stderr__)
 
     if cmd == 'exec':
         proc = subprocess.Popen(args)
@@ -221,7 +262,7 @@ elif cmd == 'items':
         )
         print(''.join(s))
 
-elif cmd == 'fullitems':
+elif cmd == '_fullitems':
     # timestamp, key, value
     everything = [(v[0], k, v[1]) for k, v in cdict.items()]
     x = sorted(everything, reverse=True)
