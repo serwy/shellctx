@@ -25,6 +25,7 @@ setup(name='shellctx',
       scripts = get_dir('scripts'),
       license='GNU GPLv3',
       long_description=LONG_DESCRIPTION,
+      long_description_content_type='text/markdown',
       classifiers = [
           'Development Status :: 3 - Alpha',
           'Environment :: Console',
