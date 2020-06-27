@@ -122,7 +122,7 @@ elif cmd == 'get':
     else:
         print(v, end='')
 
-elif cmd == 'shell':
+elif cmd in ['shell', 'dryshell']:
     # use the key as the command
     # and the value as keys for the arguments
     sh = cdict[key][1]
@@ -132,21 +132,24 @@ elif cmd == 'shell':
         args = [cdict[v][1] for v in value.split()]
         arg = ' '.join(args)
 
-    cmd = sh
+    sh_cmd = sh
     if arg:
-        cmd = cmd + ' ' + arg
+        sh_cmd = sh_cmd + ' ' + arg
 
     s = ('shell command: ',
         color['blue'],
-        cmd,
+        sh_cmd,
         color[''],
         )
     if verbose_flag:
         print(''.join(s))
 
-    os.system(cmd)
+    if cmd == 'shell':
+        os.system(sh_cmd)
+    else:
+        print('dryrun ' + ''.join(s))
 
-elif cmd == 'exec':
+elif cmd in ('exec', 'dryexec'):
     import shlex
     import subprocess
 
@@ -161,8 +164,12 @@ elif cmd == 'exec':
         )
     if verbose_flag:
         print(''.join(s))
-    proc = subprocess.Popen(args)
-    retcode = proc.wait()
+
+    if cmd == 'exec':
+        proc = subprocess.Popen(args)
+        retcode = proc.wait()
+    else:
+        print('dryrun ' + ''.join(s))
 
 elif cmd == 'pop':
     print(cdict[key][1], end='')

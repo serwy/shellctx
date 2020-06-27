@@ -104,11 +104,15 @@ additional keys. The command string is passed to a shell.
     $ ctx shell server port
     Serving HTTP on 0.0.0.0 port 9999 (http://0.0.0.0:9999/) ...
 
+`dryshell` - prints the command passed to the shell without executing
+
 `exec` - uses the key to get the executable, and the additional arguments
 are passed directly to the executable.
 
     $ ctx exec server 9999
     Serving HTTP on 0.0.0.0 port 9999 (http://0.0.0.0:9999/) ...
+
+`dryexec` - prints the arguments passed to the executable without executing.
 
 `set` - set a key to a value
 
