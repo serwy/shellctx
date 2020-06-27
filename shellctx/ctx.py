@@ -89,14 +89,27 @@ except IndexError:
 
 need_store = False
 
-if cmd == 'pushpath':  # may remove
-    if key and value is None:
-        raise ValueError('need key and path')
+if cmd == 'setpath':
+    assert(key is not None)
+
+    base = os.getcwd()
     if value is None:
-        value = os.path.cwd()
-    value = os.path.abspath(value)
-    cdict[key] = (now, value)
+        store = base
+    else:
+        store = os.path.join(base, value)
+
+    cdict[key] = (now, store)
     need_store = True
+    s = ('setting ',
+         color['red'],
+         key,
+         color[''],
+         ' = ',
+         color['blue'],
+         store,
+         color[''],
+         )
+    print(''.join(s))
 
 elif cmd == 'get':
     v = cdict[key][1]
