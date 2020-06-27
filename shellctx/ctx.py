@@ -132,20 +132,19 @@ if cmd == '_print':
 
 elif cmd == 'setpath':
     assert(key is not None)
-
+    assert(value is not None)
     base = os.getcwd()
-    if value is None:
+    if value == '.':  # . for pwd
         store = base
     else:
         store = os.path.join(base, value)
 
     cdict[key] = (now, store)
     need_store = True
-    s = ('setting ',
-         color['red'],
+    s = (color['red'],
          key,
          color[''],
-         ' = ',
+         '=',
          color['blue'],
          store,
          color[''],
