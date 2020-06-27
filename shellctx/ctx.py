@@ -427,6 +427,17 @@ elif cmd == '_delctx':
 elif cmd == 'version':
     _print_version()
 
+    s = ('\n',
+         'for latest version, visit: ',
+         color['blue'],
+         'https://github.com/serwy/shellctx',
+         color[''],
+         '\n'
+         )
+    if __name__ == '__main__':
+        # executing as the downloaded file
+        print(''.join(s), file=sys.__stderr__)
+
 
 elif cmd in ['help', '-h']:
     print('get set del shell items fullitems copy rename keys switch')
