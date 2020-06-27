@@ -8,7 +8,9 @@ from shellctx._version import __version__
 def get_dir(d):
     return glob.glob('%s/*' % d)
 
-ldesc = """shellctx - shell context helper"""
+with open('README.md', 'rb') as fid:
+    LONG_DESCRIPTION = fid.read().decode('utf8')
+
 
 setup(name='shellctx',
       version=__version__,
@@ -22,7 +24,7 @@ setup(name='shellctx',
       include_package_data=False,
       scripts = get_dir('scripts'),
       license='GNU GPLv3',
-      long_description=ldesc,
+      long_description=LONG_DESCRIPTION,
       classifiers = [
           'Development Status :: 3 - Alpha',
           'Environment :: Console',
