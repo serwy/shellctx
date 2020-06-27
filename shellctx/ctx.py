@@ -435,7 +435,8 @@ elif cmd == '_download':
               sys.argv[0]
               )
     if __name__ == '__main__':
-        print(''.join(s), end='')
+        end = '\n' if sys.stdout.isatty() else ''
+        print(''.join(sh_cmd), end=end)
     else:
         s = ('running as a module ',
              color['red'],
