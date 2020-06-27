@@ -35,14 +35,14 @@ By default, `ctx` shows the current context and the entries
     2020-01-01T23:24:40.893719    server = python3 -m http.server
     2020-01-01T23:07:57.792251    home = /home/serwy
 
-It can be used for storing a directory and later changing to it:
+It can be used for storing a long directory for later use:
 
     $ cd /very/long/directory/to/type/manually
     $ ctx set project `pwd`
 
     $ cd `ctx get project`
 
-It can be used to save and load environment variables:
+It can also save and load environment variables:
 
     $ ctx set myshell $SHELL
 
@@ -57,7 +57,7 @@ A key's value can be passed directly to the shell:
     Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
 
 
-## Other commands
+## Available Commands
 
 `copy` - copies a key, updates timestamp
 
@@ -97,6 +97,32 @@ New contexts may be created this way.
     * dev
       main
 
+`shell` - uses the key as a command, and values are treated as
+additional keys. The command string is passed to a shell.
+
+    $ ctx set port 9999
+    $ ctx shell server port
+    Serving HTTP on 0.0.0.0 port 9999 (http://0.0.0.0:9999/) ...
+
+`exec` - uses the key to get the executable, and the additional arguments
+are passed directly to the executable.
+
+    $ ctx exec server 9999
+    Serving HTTP on 0.0.0.0 port 9999 (http://0.0.0.0:9999/) ...
+
+`set` - set a key to a value
+
+    $ ctx set keyname value
+
+`get` - print the value for the given key
+
+    $ ctx get server
+    python3 -m http.server
+
+`del` - delete a key
+
+    $ ctx del keyname
+
 
 ## Environment Variables
 
@@ -105,6 +131,11 @@ New contexts may be created this way.
 The active context may be forced by setting the `CTX_NAME` environment variable.
 
 This is useful when needing to dedicate a terminal to a particular context.
+
+### `CTX_VERBOSE`
+
+A flag to increase verbosity. It is an integer value of `0`, `1`, or more.
+If undefined, it defaults to `0`.
 
 
 ## Implementation details

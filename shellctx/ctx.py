@@ -46,6 +46,7 @@ else:
     name = 'main'
 
 env_name = os.environ.get('CTX_NAME')
+verbose_flag = int(os.environ.get('CTX_VERBOSE', 0))
 
 if env_name:
     name = env_name
@@ -74,6 +75,8 @@ def load_log():
 cmd = 'fullitems'
 key = None
 value = None
+
+retcode = 0
 
 try:
     cmd = sys.argv[1]
@@ -107,14 +110,46 @@ elif cmd == 'get':
         print(v, end='')
 
 elif cmd == 'shell':
-    v = cdict[key][1]
-    s = ('shell execute: ',
+    # use the key as the command
+    # and the value as keys for the arguments
+    sh = cdict[key][1]
+    if value is None:
+        arg = ''
+    else:
+        args = [cdict[v][1] for v in value.split()]
+        arg = ' '.join(args)
+
+    cmd = sh
+    if arg:
+        cmd = cmd + ' ' + arg
+
+    s = ('shell command: ',
         color['blue'],
-        v,
+        cmd,
         color[''],
         )
-    #print(''.join(s))
-    os.system(v)
+    if verbose_flag:
+        print(''.join(s))
+
+    os.system(cmd)
+
+elif cmd == 'exec':
+    import shlex
+    import subprocess
+
+    sh = cdict[key][1]
+    args = shlex.split(sh)
+    args.extend(sys.argv[3:])
+
+    s = ('exec command: ',
+        color['blue'],
+        repr(args),
+        color[''],
+        )
+    if verbose_flag:
+        print(''.join(s))
+    proc = subprocess.Popen(args)
+    retcode = proc.wait()
 
 elif cmd == 'pop':
     print(cdict[key][1], end='')
@@ -280,3 +315,5 @@ if need_store:
 
     with open(log_file, 'wb') as fid:
         fid.write(json.dumps(log, indent=4).encode('utf8'))
+
+sys.exit(retcode)
