@@ -252,6 +252,7 @@ elif cmd == 'copy':
     need_store = True
 
 elif cmd == 'items':
+    # make the output resemble `env`
     keys = sorted(cdict.keys())
     for k in keys:
         s = (color['red'], k, color[''], '=',
@@ -355,6 +356,32 @@ elif cmd == 'import':
         cdict[store_as] = (now, env_value)
         need_store = True
 
+elif cmd == 'update':
+    # update the keys with the given file of key=value lines
+    assert(key is not None)
+    # key is a file, - for stdin. readlines,
+    if key == '-':
+        fid = sys.stdin
+    else:
+        fid = open(key, 'r')
+
+    # process the lines
+    d = {}
+    for line in fid.readlines():
+        key, eq, value = line.partition('=')
+        value = value.rstrip() # strip newline
+        d[key] = (now, value)
+
+    fid.close()
+    # update if no error occurs
+    cdict.update(d)
+    need_store = True
+
+elif cmd == '_clear':
+    if os.path.exists(ctx_file):
+        os.remove(ctx_file)
+    if os.path.exists(log_file):
+        os.remove(log_file)
 
 
 elif cmd in ['help', '-h']:
