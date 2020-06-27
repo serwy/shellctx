@@ -427,15 +427,24 @@ elif cmd == '_delctx':
 elif cmd == 'version':
     _print_version()
 
-    s = ('\n',
-         'for latest version, visit: ',
-         color['blue'],
-         'https://github.com/serwy/shellctx',
-         color[''],
-         '\n'
-         )
+elif cmd == '_download':
+    # print out the download command, if running directly
+    sh_cmd = ('curl '
+              'https://raw.githubusercontent.com/serwy/shellctx/master/shellctx/ctx.py',
+              ' > ',
+              sys.argv[0]
+              )
     if __name__ == '__main__':
-        # executing as the downloaded file
+        print(''.join(s), end='')
+    else:
+        s = ('running as a module ',
+             color['red'],
+             __name__,
+             color[''],
+             '\n',
+             'from "%s"' % __file__,
+             '\n'
+             )
         print(''.join(s), file=sys.__stderr__)
 
 
