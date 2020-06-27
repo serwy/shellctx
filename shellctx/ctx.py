@@ -358,7 +358,13 @@ elif cmd == 'import':
 
 elif cmd == 'update':
     # update the keys with the given file of key=value lines
+    # example: $ env | ctx update -
+    # the "items" command can be used to bulk transfer key-values
+    #   ctx items > kv.txt
+    #   ctx switch new_env
+    #   ctx update kv.txt
     assert(key is not None)
+    assert(value is None)
     # key is a file, - for stdin. readlines,
     if key == '-':
         fid = sys.stdin
@@ -382,6 +388,16 @@ elif cmd == '_clear':
         os.remove(ctx_file)
     if os.path.exists(log_file):
         os.remove(log_file)
+
+elif cmd == '_delctx':
+    assert(key is not None)
+    assert(value is None)
+    _ctx_file = os.path.join(ctx, key + '.json')
+    _log_file = os.path.join(ctx, key + '.log')
+    if os.path.exists(_ctx_file):
+        os.remove(_ctx_file)
+    if os.path.exists(_log_file):
+        os.remove(_log_file)
 
 
 elif cmd in ['help', '-h']:
