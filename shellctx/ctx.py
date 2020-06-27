@@ -263,7 +263,7 @@ elif cmd == 'import':
 
 
 elif cmd in ['help', '-h']:
-    print('get set del shell items fullitems copy renv_name keys switch')
+    print('get set del shell items fullitems copy rename keys switch')
 
 
 else:
