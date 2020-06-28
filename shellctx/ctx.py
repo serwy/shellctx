@@ -142,7 +142,11 @@ if verbose_flag > 1:
     print(''.join(s), file=sys.__stderr__)
 
     s = ('context home: %s\n' % ctx)
+    print(''.join(s), file=sys.__stderr__, end='')
+
+    s = ('context file: %s\n' % ctx_file)
     print(''.join(s), file=sys.__stderr__)
+
 
 if cmd is None:
     cmd = '_fullitems'
@@ -435,6 +439,10 @@ elif cmd == '_delctx':
 
 elif cmd == 'version':
     _print_version()
+
+elif cmd == '_dict':
+    end = '\n' if sys.stdout.isatty() else ''
+    print(ctx_file, end=end)
 
 elif cmd == '_download':
     # print out the download command, if running directly
