@@ -18,7 +18,7 @@ import os
 import sys
 import json
 
-__version__ = '0.1.2'
+__version__ = '0.1.3.dev0'
 
 # ANSI coloring
 color = {
