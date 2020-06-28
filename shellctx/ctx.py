@@ -440,6 +440,46 @@ elif cmd == '_delctx':
 elif cmd == 'version':
     _print_version()
 
+elif cmd == 'entry':
+    # auto-increment the maximum suffix for a key
+    assert(key is not None)
+    assert(value is not None)
+    # use key as a prefix
+    prefix = key + '_'
+    N = len(prefix)
+    keys = list(cdict.keys())
+    suffix = [i[N:] for i in keys if i.startswith(prefix)]
+
+    nums = []
+    for n in suffix:
+        try:
+            nums.append(int(n))
+        except:
+            pass
+
+    if not nums:
+        nums.append(0)
+
+    next_num = max(nums) + 1
+
+    key = prefix + ('%03i' % next_num)
+    assert(key not in cdict)  # must be new key
+
+    cdict[key] = (now, value)
+
+    need_store = True
+
+    s = (color['red'],
+         key,
+         color[''],
+         '=',
+         color['blue'],
+         value,
+         color[''],
+         )
+    print(''.join(s))
+
+
 elif cmd == '_dict':
     end = '\n' if sys.stdout.isatty() else ''
     print(ctx_file, end=end)

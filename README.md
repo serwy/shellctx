@@ -148,6 +148,15 @@ is useful when debugging argument quoting errors.
         3 = 'arguments'
         4 = 'kept together'
 
+`entry` - auto-increment the maximum suffix for a key before setting.
+This is useful for storing quick notes.
+
+    $ ctx entry _note This is an observation
+    _note_001=This is an observation
+
+    $ ctx entry _note system A depends on system B
+    _note_002=system A depends on system B
+
 ## Environment Variables
 
 ### `CTX_NAME`
