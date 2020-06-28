@@ -42,7 +42,7 @@ It can store long commands for later use:
 It can also save and load environment variables:
 
     $ ctx set mypath $PATH
-    $ export PATH=`ctx get mypath`
+    $ export PATH="`ctx get mypath`"
 
 By default, `ctx` shows the current context dictionary and the
 sorted timestamped entries:
