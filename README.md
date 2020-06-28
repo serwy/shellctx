@@ -4,15 +4,14 @@
 Shell context helper for saving, recalling, and executing information from
 a persistent dictionary.
 
-## Why?
 
-Q: Shells provide alias capabilities and environment variables which 
-   can do the same thing. Why this?
+## Motivation
 
-A: I don't want to edit `.bashrc` files to add or change aliases/variables. 
-   I want state changes to be accessible from all open terminals without 
-   sourcing shell files. Environment variables and aliases by themselves 
-   are not persistent across restarts.
+Setting environment variables and aliases (`.bashrc`, `.cshrc`, etc.)
+is useful when you have an established workflow with known common actions.
+This program is for discovering what that workflow should be, when the
+working directories and commands are not fully known just yet. All shell
+instances have access to the work-in-progress context dictionary.
 
 
 ## Usage
@@ -33,13 +32,20 @@ It can be used for storing a long directory for later use:
 
     $ cd `ctx get project`
 
+It can store long commands for later use:
+
+    $ ctx set server '/usr/bin/python3 -m http.server'
+    $ ctx shell server
+    Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+
+
 It can also save and load environment variables:
 
-    $ ctx set myshell $SHELL
+    $ ctx set mypath $PATH
+    $ export PATH=`ctx get mypath`
 
-    $ export SHELL=`ctx get myshell`
-
-By default, `ctx` shows the current context and the sorted timestamped entries:
+By default, `ctx` shows the current context dictionary and the
+sorted timestamped entries:
 
     $ ctx
     Using context main
@@ -47,15 +53,6 @@ By default, `ctx` shows the current context and the sorted timestamped entries:
 
     2020-01-01T23:24:40.893719    server = python3 -m http.server
     2020-01-01T23:07:57.792251    home = /home/serwy
-
-
-## Shell execution
-
-A key's value can be passed directly to the shell:
-
-    $ ctx set server  python3 -m http.server
-    $ ctx shell server
-    Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
 
 
 ## Available Commands
@@ -134,7 +131,8 @@ are passed directly to the executable.
 
     $ ctx del keyname
 
-`setpath` - save the given path with the present working directory
+`setpath` - add the present working directory to the value when setting
+the given key
 
     $ ctx setpath keyname .bashrc
     keyname=/home/serwy/.bashrc
@@ -173,7 +171,7 @@ The context dictionaries are stored in `~/.ctx/`
 The `.json` files are the context dictionaries.
 The `.log` files are the change logs.
 
-The `_name.txt` contains the name of the active context.
+The `_name.txt` file contains the name of the active context.
 If missing, defaults to `main`.
 
 
