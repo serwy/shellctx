@@ -189,9 +189,9 @@ or
 
 If you just want the script directly, you can download and copy
 `shellctx/ctx.py` as `ctx` somewhere on your `$PATH` and apply `chmod +x`.
-The direct link is: https://raw.githubusercontent.com/serwy/shellctx/master/shellctx/ctx.py
+The direct link is: https://raw.githubusercontent.com/serwy/shellctx/latest/shellctx/ctx.py
 
-    curl  https://raw.githubusercontent.com/serwy/shellctx/master/shellctx/ctx.py > ctx
+    curl  https://raw.githubusercontent.com/serwy/shellctx/latest/shellctx/ctx.py > ctx
     chmod +x ctx
 
 ## License

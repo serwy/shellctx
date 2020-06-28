@@ -447,7 +447,7 @@ elif cmd == '_dict':
 elif cmd == '_download':
     # print out the download command, if running directly
     sh_cmd = ('curl '
-              'https://raw.githubusercontent.com/serwy/shellctx/master/shellctx/ctx.py',
+              'https://raw.githubusercontent.com/serwy/shellctx/latest/shellctx/ctx.py',
               ' -o ',
               sys.argv[0]
               )
