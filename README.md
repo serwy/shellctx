@@ -9,7 +9,7 @@ a persistent dictionary.
 
 Setting environment variables and aliases (`.bashrc`, `.cshrc`, etc.)
 is useful when you have an established workflow with known common actions.
-This program is for discovering what that workflow should be, when the
+This program is for discovering what that workflow should be, when the needed
 working directories and commands are not fully known just yet. All shell
 instances have access to the work-in-progress context dictionary.
 
