@@ -26,16 +26,6 @@ that can get/set/delete keys and values.
 
     $ ctx del x
 
-
-By default, `ctx` shows the current context and the entries
-
-    $ ctx
-    Using context main
-    There are 2 entries.
-
-    2020-01-01T23:24:40.893719    server = python3 -m http.server
-    2020-01-01T23:07:57.792251    home = /home/serwy
-
 It can be used for storing a long directory for later use:
 
     $ cd /very/long/directory/to/type/manually
@@ -48,6 +38,16 @@ It can also save and load environment variables:
     $ ctx set myshell $SHELL
 
     $ export SHELL=`ctx get myshell`
+
+By default, `ctx` shows the current context and the sorted timestamped entries:
+
+    $ ctx
+    Using context main
+    There are 2 entries.
+
+    2020-01-01T23:24:40.893719    server = python3 -m http.server
+    2020-01-01T23:07:57.792251    home = /home/serwy
+
 
 ## Shell execution
 
@@ -107,6 +107,9 @@ additional keys. The command string is passed to a shell.
 
 `dryshell` - prints the command passed to the shell without executing
 
+    $ ctx dryshell server port
+    dryrun shell command: python3 -m http.server 9999
+
 `exec` - uses the key to get the executable, and the additional arguments
 are passed directly to the executable.
 
@@ -114,6 +117,9 @@ are passed directly to the executable.
     Serving HTTP on 0.0.0.0 port 9999 (http://0.0.0.0:9999/) ...
 
 `dryexec` - prints the arguments passed to the executable without executing.
+
+    $ ctx dryexec server 9999
+    dryrun exec command: ['python3', '-m', 'http.server', '9999']
 
 `set` - set a key to a value
 
@@ -128,6 +134,20 @@ are passed directly to the executable.
 
     $ ctx del keyname
 
+`setpath` - save the given path with the present working directory
+
+    $ ctx setpath keyname .bashrc
+    keyname=/home/serwy/.bashrc
+
+`args` - print out the arguments as seen by the program, quoted
+
+    $ ctx args some arguments "kept together"
+    sys.argv[:]
+        0 = '/home/serwy/.local/bin/ctx'
+        1 = 'args'
+        2 = 'some'
+        3 = 'arguments'
+        4 = 'kept together'
 
 ## Environment Variables
 

@@ -150,7 +150,7 @@ if cmd is None:
 need_store = False
 
 
-if cmd == '_print':
+if cmd == 'args':
     _print_args()
 
 elif cmd == 'setpath':
@@ -162,8 +162,13 @@ elif cmd == 'setpath':
     else:
         store = os.path.join(base, value)
 
+    # rewrite for the log
+    cmd = 'set'
+    value = store
+
     cdict[key] = (now, store)
     need_store = True
+
     s = (color['red'],
          key,
          color[''],
@@ -234,7 +239,7 @@ elif cmd in ('exec', 'dryexec'):
     else:
         print('dryrun ' + ''.join(s))
 
-elif cmd == 'pop':
+elif cmd == '_pop':  # may remove
     print(cdict[key][1], end='')
     del cdict[key]
     need_store = True
@@ -247,6 +252,7 @@ elif cmd == 'set':
 elif cmd == 'del':
     del cdict[key]
     if value:
+        # TODO: ensure all keys exist before
         # for deleting multiple keys
         for v in value.split():
             del cdict[v]
@@ -295,7 +301,8 @@ elif cmd == '_fullitems':
     if ctx_home:
         s = s + ((' (from CTX_HOME=%s)' % ctx_home),)
     print(''.join(s))
-    s = ('There are ', color['blue'], str(len(everything)), color[''], ' entries.\n')
+    s = ('There are ', color['blue'], str(len(everything)),
+        color[''], ' entries.\n')
     print(''.join(s))
 
     for ctime, key, value in x:
@@ -408,11 +415,13 @@ elif cmd == 'update':
     cdict.update(d)
     need_store = True
 
-elif cmd == '_clear':
-    if os.path.exists(ctx_file):
-        os.remove(ctx_file)
-    if os.path.exists(log_file):
-        os.remove(log_file)
+    # FIXME: need to adjust the log data
+
+elif cmd == 'clear':
+    # require clear to have the key as a failsafe
+    assert(key == name)
+    cdict.clear()
+    need_store = True
 
 elif cmd == '_delctx':
     assert(key is not None)
@@ -450,8 +459,8 @@ elif cmd == '_download':
 
 
 elif cmd in ['help', '-h']:
-    print('get set del shell items fullitems copy rename keys switch')
-
+    print('get set del shell exec items copy rename '
+          'keys switch version log')
 
 else:
     s = ('command not recognized: ', color['red'], cmd, color[''])
