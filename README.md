@@ -30,7 +30,7 @@ It can be used for storing a long directory for later use:
     $ cd /very/long/directory/to/type/manually
     $ ctx set project `pwd`
 
-    $ cd `ctx get project`
+    $ cd "`ctx get project`"
 
 It can store long commands for later use:
 
@@ -137,7 +137,8 @@ the given key
     $ ctx setpath keyname .bashrc
     keyname=/home/serwy/.bashrc
 
-`args` - print out the arguments as seen by the program, quoted
+`args` - print out the arguments as seen by the program, quoted. This
+is useful when debugging argument quoting errors.
 
     $ ctx args some arguments "kept together"
     sys.argv[:]
