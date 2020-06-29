@@ -29,7 +29,9 @@ color = {
     'blue': '\033[1;94m',
 }
 
+WINDOWS = False
 if sys.platform.startswith('win'):
+    WINDOWS = True
     color = dict.fromkeys(color.keys(), '')
 
 def _print_version():
@@ -165,6 +167,11 @@ elif cmd == 'setpath':
         store = base
     else:
         store = os.path.join(base, value)
+
+    if WINDOWS:
+        if ' ' in store:
+            # double-quote the path due to spaces
+            store = '"%s"' % store
 
     # rewrite for the log
     cmd = 'set'
@@ -478,6 +485,32 @@ elif cmd == 'entry':
          color[''],
          )
     print(''.join(s))
+
+elif cmd in ('dosvar'):
+    # export a key into windows shell
+    assert(key is not None)
+    store_as = key
+    if value is not None:
+         store_as = value
+    tstamp, cvalue = cdict[key]
+    d = ['set %s=%s' % (store_as, cvalue)]
+    if store_as == 'cd':
+        if cvalue[0] == '"':
+            # unquote the file
+            if os.path.isfile(cvalue[1:-1]):
+                head, tail = os.path.split(cvalue[1:-1])
+                cvalue = '"%s"' % head
+        else:
+            if os.path.isfile(cvalue):
+                head, tail = os.path.split(cvalue)
+                cvalue = head
+
+        d.append('cd %s' % cvalue)
+
+    xfile = os.path.join(ctx, 'ctx_export.bat')
+    with open(xfile, 'w') as fid:
+        fid.write('\r\n'.join(d))
+
 
 
 elif cmd == '_dict':
