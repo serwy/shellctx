@@ -524,6 +524,11 @@ elif cmd in ('dosvar'):
     with open(xfile, 'w') as fid:
         fid.write('\r\n'.join(d))
 
+elif cmd == 'now':
+    # useful for appending to file names
+    # make the time filesystem-safe and still iso8601 compliant
+    n = now.replace(':', '')
+    print(n)
 
 
 elif cmd == '_dict':

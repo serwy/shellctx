@@ -157,6 +157,15 @@ This is useful for storing quick notes.
     $ ctx entry _note system A depends on system B
     _note_002=system A depends on system B
 
+`now` - prints out the iso8601 time, filesystem safe.
+This is useful for quickly appending a suffix to a file
+
+    $ ctx now
+    2020-01-01T193048.465660
+
+    $ cp myfile.txt ~/backup/myfile.txt_`ctx now`
+
+
 ## Environment Variables
 
 ### `CTX_NAME`
