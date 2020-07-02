@@ -24,15 +24,31 @@ __version__ = '0.1.3.dev0'
 color = {
     '': '\033[0m',  # reset
     'black': '\033[0;30m',
-    'red': '\033[1;31m',
+    'red': '\033[0;31m',
     'green': '\033[0;32m',
-    'blue': '\033[1;94m',
+    'blue': '\033[0;94m',
+    'yellow': '\033[0;33m',
 }
+
 
 WINDOWS = False
 if sys.platform.startswith('win'):
     WINDOWS = True
     color = dict.fromkeys(color.keys(), '')
+
+if not sys.stdout.isatty():
+    color = dict.fromkeys(color.keys(), '')
+
+style = {
+    '':color[''],  # blank
+    'key': color['green'],
+    'value': color['blue'],
+    'time': color['red'],
+    'command': color['blue'],
+    'context': color['blue'],
+}
+
+
 
 def _print_version():
     s = ('shellctx version ',
@@ -40,14 +56,14 @@ def _print_version():
          __version__,
          color['']
          )
-    print(''.join(s), file=sys.__stderr__)
+    print(''.join(s), file=sys.stderr)
 
 env_name = os.environ.get('CTX_NAME')
 verbose_flag = int(os.environ.get('CTX_VERBOSE', 0))
 
 
 if verbose_flag:
-    print('CTX_VERBOSE=%i' % verbose_flag, file=sys.__stderr__)
+    print('CTX_VERBOSE=%i' % verbose_flag, file=sys.stderr)
     _print_version()
 
 
@@ -60,7 +76,7 @@ if ctx_home is None:
     ctx = os.path.expanduser('~/.ctx')
 else:
     if verbose_flag:
-        print('CTX_HOME=%s' % ctx_home, file=sys.__stderr__)
+        print('CTX_HOME=%s' % ctx_home, file=sys.stderr)
     ctx = ctx_home
 
 os.makedirs(ctx, exist_ok=True)
@@ -76,7 +92,7 @@ else:
 
 if env_name:
     if verbose_flag:
-        print('CTX_NAME=%s' % env_name, file=sys.__stderr__)
+        print('CTX_NAME=%s' % env_name, file=sys.stderr)
     name = env_name
 
 ctx_file = os.path.join(ctx, name + '.json')
@@ -103,22 +119,22 @@ def load_log():
 
 def _print_args():
     # debug, dump sys.argv
-    print('sys.argv[:]', file=sys.__stderr__)
+    print('sys.argv[:]', file=sys.stderr)
     for n, i in enumerate(sys.argv):
-        s = (color['red'],
+        s = (style['key'],
              '  %3i' % n,
              color[''],
              ' = ',
-             color['blue'],
+             style['value'],
              repr(i),
              color[''],
              )
-        print(''.join(s), file=sys.__stderr__)
+        print(''.join(s), file=sys.stderr)
 
 
 if verbose_flag > 1:
     _print_args()
-    print(file=sys.__stderr__)
+    print(file=sys.stderr)
 
 
 cmd = None
@@ -141,13 +157,13 @@ if verbose_flag > 1:
          '    key:      %s\n' % repr(key),
          '    value:    %s\n' % repr(value)
          )
-    print(''.join(s), file=sys.__stderr__)
+    print(''.join(s), file=sys.stderr)
 
     s = ('context home: %s\n' % ctx)
-    print(''.join(s), file=sys.__stderr__, end='')
+    print(''.join(s), file=sys.stderr, end='')
 
     s = ('context file: %s\n' % ctx_file)
-    print(''.join(s), file=sys.__stderr__)
+    print(''.join(s), file=sys.stderr)
 
 
 if cmd is None:
@@ -180,11 +196,11 @@ elif cmd == 'setpath':
     cdict[key] = (now, store)
     need_store = True
 
-    s = (color['red'],
+    s = (style['key'],
          key,
          color[''],
          '=',
-         color['blue'],
+         style['value'],
          store,
          color[''],
          )
@@ -192,14 +208,11 @@ elif cmd == 'setpath':
 
 elif cmd == 'get':
     v = cdict[key][1]
-    if sys.stdout.isatty():
-        s = (color['green'],
-            v,
-            color[''],
-            )
-        print(''.join(s))
-    else:
-        print(v, end='')
+    s = (style['value'],
+        v,
+        color[''],
+        )
+    print(''.join(s))
 
 elif cmd in ['shell', 'dryshell']:
     # use the key as the command
@@ -216,12 +229,12 @@ elif cmd in ['shell', 'dryshell']:
         sh_cmd = sh_cmd + ' ' + arg
 
     s = ('shell command: ',
-        color['blue'],
+        style['command'],
         sh_cmd,
         color[''],
         )
     if verbose_flag:
-        print(''.join(s), file=sys.__stderr__)
+        print(''.join(s), file=sys.stderr)
 
     if cmd == 'shell':
         os.system(sh_cmd)
@@ -237,12 +250,12 @@ elif cmd in ('exec', 'dryexec'):
     args.extend(sys.argv[3:])
 
     s = ('exec command: ',
-        color['blue'],
+        style['command'],
         repr(args),
         color[''],
         )
     if verbose_flag:
-        print(''.join(s), file=sys.__stderr__)
+        print(''.join(s), file=sys.stderr)
 
     if cmd == 'exec':
         proc = subprocess.Popen(args)
@@ -272,7 +285,7 @@ elif cmd == 'del':
 elif cmd == 'keys':
     keys = sorted(cdict.keys())
     for k in keys:
-        s = (color['red'],
+        s = (style['key'],
             k,
             color[''],
             )
@@ -295,8 +308,8 @@ elif cmd == 'items':
     # make the output resemble `env`
     keys = sorted(cdict.keys())
     for k in keys:
-        s = (color['red'], k, color[''], '=',
-             color['blue'],
+        s = (style['key'], k, color[''], '=',
+             style['value'],
              cdict[k][1],
              color['']
         )
@@ -306,23 +319,23 @@ elif cmd == '_fullitems':
     # timestamp, key, value
     everything = [(v[0], k, v[1]) for k, v in cdict.items()]
     x = sorted(everything, reverse=True)
-    s = ('Using context ', color['blue'], name, color[''], '')
+    s = ('Using context ', style['context'], name, color[''], '')
     if env_name:
         s = s + (' (set by CTX_NAME)', )
     if ctx_home:
         s = s + ((' (from CTX_HOME=%s)' % ctx_home),)
     print(''.join(s))
-    s = ('There are ', color['blue'], str(len(everything)),
+    s = ('There are ', style['value'], str(len(everything)),
         color[''], ' entries.\n')
     print(''.join(s))
 
     for ctime, key, value in x:
         value=str(value)
-        s = (color['green'],
+        s = (style['time'],
              ctime, '    ',
-             color['red'], key,
+             style['key'], key,
              color[''], ' = ',
-             color['blue'], value,
+             style['value'], value,
              color['']
              )
         print(''.join(s))
@@ -342,7 +355,7 @@ elif cmd == 'switch':
             f.append(name)
         for i in sorted(f):
             if i == name:
-                s = (color['blue'],
+                s = (style['value'],
                      '* ',
                      i,
                      color[''])
@@ -353,7 +366,7 @@ elif cmd == 'switch':
 
     elif env_name:
         s = ('context set by CTX_NAME as ',
-             color['blue'],
+             style['context'],
              env_name,
              color[''],
              '. Not switching.')
@@ -362,11 +375,11 @@ elif cmd == 'switch':
     else:
         if name != key:
             s = ('switching to "',
-                color['blue'],
+                style['context'],
                 key,
                 color[''],
                 '" from "',
-                color['blue'],
+                style['context'],
                 name,
                 color[''],
                 '"',
@@ -377,7 +390,7 @@ elif cmd == 'switch':
                 fid.write(key)
         else:
             s = ('already on "',
-                color['blue'],
+                style['context'],
                 key,
                 color[''],
                 '"',
@@ -476,11 +489,11 @@ elif cmd == 'entry':
 
     need_store = True
 
-    s = (color['red'],
+    s = (style['key'],
          key,
          color[''],
          '=',
-         color['blue'],
+         style['value'],
          value,
          color[''],
          )
@@ -514,8 +527,7 @@ elif cmd in ('dosvar'):
 
 
 elif cmd == '_dict':
-    end = '\n' if sys.stdout.isatty() else ''
-    print(ctx_file, end=end)
+    print(ctx_file)
 
 elif cmd == '_download':
     # print out the download command, if running directly
@@ -525,8 +537,7 @@ elif cmd == '_download':
               sys.argv[0]
               )
     if __name__ == '__main__':
-        end = '\n' if sys.stdout.isatty() else ''
-        print(''.join(sh_cmd), end=end)
+        print(''.join(sh_cmd))
     else:
         s = ('running as a module ',
              color['red'],
@@ -536,12 +547,12 @@ elif cmd == '_download':
              'from "%s"' % __file__,
              '\n'
              )
-        print(''.join(s), file=sys.__stderr__)
+        print(''.join(s), file=sys.stderr)
 
 
 elif cmd in ['help', '-h']:
     print('get set del shell exec items copy rename '
-          'keys switch version log')
+          'keys switch version log entry now')
 
 else:
     s = ('command not recognized: ', color['red'], cmd, color[''])
