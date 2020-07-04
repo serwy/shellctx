@@ -68,8 +68,11 @@ if verbose_flag:
 
 
 import datetime
-now = datetime.datetime.now().isoformat()
+def get_now():
+    now = datetime.datetime.now().isoformat()
+    return now
 
+now = get_now()
 
 ctx_home = os.environ.get('CTX_HOME', None)
 if ctx_home is None:
@@ -305,12 +308,26 @@ elif cmd == 'copy':
     need_store = True
 
 elif cmd == 'items':
+    # print out the items in creation order
+    # if args, use args as keys
+
+    # allow for `ctx items | ctx update -" to preserve time order
+    x = ' '.join(sys.argv[2:])
+    if x:
+        keys = x.split()
+        items = [
+            (cdict[k][0], k, cdict[k][1])
+            for k in keys
+            ]
+    else:
+        everything = [(v[0], k, v[1]) for k, v in cdict.items()]
+        items = sorted(everything)
+
     # make the output resemble `env`
-    keys = sorted(cdict.keys())
-    for k in keys:
-        s = (style['key'], k, color[''], '=',
+    for ctime, key, value in items:
+        s = (style['key'], key, color[''], '=',
              style['value'],
-             cdict[k][1],
+             value,
              color['']
         )
         print(''.join(s))
@@ -429,10 +446,17 @@ elif cmd == 'update':
 
     # process the lines
     d = {}
+    now2 = now
     for line in fid.readlines():
         key, eq, value = line.partition('=')
         value = value.rstrip() # strip newline
-        d[key] = (now, value)
+        d[key] = (now2, value)
+
+        while True:  # ensure unique now
+            _now2 = get_now()
+            if _now2 != now2:
+                now2 = _now2
+                break
 
     fid.close()
     # update if no error occurs

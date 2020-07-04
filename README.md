@@ -45,7 +45,7 @@ It can also save and load environment variables:
     $ export PATH="`ctx get mypath`"
 
 By default, `ctx` shows the current context dictionary and the
-sorted timestamped entries:
+sorted timestamped (newest on top) entries:
 
     $ ctx
     Using context main
@@ -65,7 +65,7 @@ sorted timestamped entries:
 
     $ ctx rename home2 home3
 
-`items` - provides a sort-by-key display of key-values
+`items` - provides a sort-by-timestamp display of key-values
 
     $ ctx items
     home=/home/serwy
