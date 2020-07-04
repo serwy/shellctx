@@ -523,7 +523,7 @@ elif cmd == 'entry':
          )
     print(''.join(s))
 
-elif cmd in ('dosvar'):
+elif cmd in ('dosvar', ):
     # export a key into windows shell
     assert(key is not None)
     store_as = key
