@@ -173,6 +173,7 @@ if cmd is None:
     cmd = '_fullitems'
 
 need_store = False
+log_extra = []  # for extra logging information
 
 
 if cmd == 'args':
@@ -324,10 +325,10 @@ elif cmd == 'items':
         items = sorted(everything)
 
     # make the output resemble `env`
-    for ctime, key, value in items:
-        s = (style['key'], key, color[''], '=',
+    for ctime, _key, _value in items:
+        s = (style['key'], _key, color[''], '=',
              style['value'],
-             value,
+             _value,
              color['']
         )
         print(''.join(s))
@@ -346,13 +347,13 @@ elif cmd == '_fullitems':
         color[''], ' entries.\n')
     print(''.join(s))
 
-    for ctime, key, value in x:
+    for ctime, _key, _value in x:
         value=str(value)
         s = (style['time'],
              ctime, '    ',
-             style['key'], key,
+             style['key'], _key,
              color[''], ' = ',
-             style['value'], value,
+             style['value'], _value,
              color['']
              )
         print(''.join(s))
@@ -448,9 +449,10 @@ elif cmd == 'update':
     d = {}
     now2 = now
     for line in fid.readlines():
-        key, eq, value = line.partition('=')
-        value = value.rstrip() # strip newline
-        d[key] = (now2, value)
+        _key, eq, _value = line.partition('=')
+        _value = _value.rstrip() # strip newline
+        d[_key] = (now2, _value)
+        log_extra.append((now2, 'update_set', _key, _value))
 
         while True:  # ensure unique now
             _now2 = get_now()
@@ -462,8 +464,6 @@ elif cmd == 'update':
     # update if no error occurs
     cdict.update(d)
     need_store = True
-
-    # FIXME: need to adjust the log data
 
 elif cmd == 'clear':
     # require clear to have the key as a failsafe
@@ -594,6 +594,8 @@ if need_store:
 
     log = load_log()
     log.append((now, cmd, key, value))
+    if log_extra:
+        log.extend(log_extra)
 
     with open(log_file, 'wb') as fid:
         fid.write(json.dumps(log, indent=4).encode('utf8'))
