@@ -108,7 +108,7 @@ additional keys. The command string is passed to a shell.
     dryrun shell command: python3 -m http.server 9999
 
 `exec` - uses the key to get the executable, and the additional arguments
-are passed directly to the executable.
+are passed directly to the executable. This is like an alias.
 
     $ ctx exec server 9999
     Serving HTTP on 0.0.0.0 port 9999 (http://0.0.0.0:9999/) ...
