@@ -165,6 +165,21 @@ This is useful for quickly appending a suffix to a file
 
     $ cp myfile.txt ~/backup/myfile.txt_`ctx now`
 
+`update` - opens a given file for loading `key=value` data. Use a
+hyphen to read from stdin.
+
+    $ ctx switch env
+    $ env | ctx update -
+    $ ctx
+    Using context env
+    There are 6 entries.
+
+    2020-01-01T17:06:10.234052    _ = /usr/bin/env
+    2020-01-01T17:06:10.234040    PATH = /home/serwy/.local/bin:/usr/local/bin:/usr/bin
+    2020-01-01T17:06:10.234038    LC_ALL = en_US.UTF-8
+    2020-01-01T17:06:10.234028    DISPLAY = :0
+    2020-01-01T17:06:10.234012    HOME = /home/serwy
+    2020-01-01T17:06:10.233881    SHELL = /bin/bash
 
 ## Environment Variables
 
