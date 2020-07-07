@@ -578,23 +578,13 @@ elif cmd == '_dict':
 
 elif cmd == '_download':
     # print out the download command, if running directly
+    tag = 'latest' if key is None else key
     sh_cmd = ('curl '
-              'https://raw.githubusercontent.com/serwy/shellctx/latest/shellctx/ctx.py',
+              'https://raw.githubusercontent.com/serwy/shellctx/%s/shellctx/ctx.py' % tag,
               ' -o ',
-              sys.argv[0]
+              'ctx.py'
               )
-    if __name__ == '__main__':
-        print(''.join(sh_cmd))
-    else:
-        s = ('running as a module ',
-             color['red'],
-             __name__,
-             color[''],
-             '\n',
-             'from "%s"' % __file__,
-             '\n'
-             )
-        print(''.join(s), file=sys.stderr)
+    print(''.join(sh_cmd))
 
 
 elif cmd in ['help', '-h']:
