@@ -21,6 +21,8 @@ import json
 __version__ = '0.1.4.dev0'
 
 # ANSI coloring
+HAS_ANSI = True
+
 color = {
     '': '\033[0m',  # reset
     'black': '\033[0;30m',
@@ -31,13 +33,31 @@ color = {
 }
 
 
+
 WINDOWS = False
 if sys.platform.startswith('win'):
     WINDOWS = True
-    color = dict.fromkeys(color.keys(), '')
+    HAS_ANSI = False
+
+    # Windows 10 can support ANSI coloring with
+    # HKEY_CURRENT_USER\Console\VirtualTerminalLevel = 1
+    try:
+        import winreg
+        h = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Console")
+        val, dype = winreg.QueryValueEx(h, "VirtualTerminalLevel")
+    except:
+        val = 0
+
+    if val == 1:
+        HAS_ANSI = True
+
 
 if not sys.stdout.isatty():
+    HAS_ANSI = False
+
+if not HAS_ANSI:
     color = dict.fromkeys(color.keys(), '')
+
 
 style = {
     '':color[''],  # blank
