@@ -541,31 +541,6 @@ elif cmd == 'entry':
          )
     print(''.join(s))
 
-elif cmd in ('dosvar', ):
-    # export a key into windows shell
-    assert(key is not None)
-    store_as = key
-    if value is not None:
-         store_as = value
-    tstamp, cvalue = cdict[key]
-    d = ['set %s=%s' % (store_as, cvalue)]
-    if store_as == 'cd':
-        if cvalue[0] == '"':
-            # unquote the file
-            if os.path.isfile(cvalue[1:-1]):
-                head, tail = os.path.split(cvalue[1:-1])
-                cvalue = '"%s"' % head
-        else:
-            if os.path.isfile(cvalue):
-                head, tail = os.path.split(cvalue)
-                cvalue = head
-
-        d.append('cd %s' % cvalue)
-
-    xfile = os.path.join(ctx, 'ctx_export.bat')
-    with open(xfile, 'w') as fid:
-        fid.write('\r\n'.join(d))
-
 elif cmd == 'now':
     # useful for appending to file names
     # make the time filesystem-safe and still iso8601 compliant
