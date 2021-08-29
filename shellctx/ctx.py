@@ -618,4 +618,4 @@ if need_store:
     with open(log_file, 'wb') as fid:
         fid.write(json.dumps(log, indent=4).encode('utf8'))
 
-sys.exit(retcode)
+# sys.exit(retcode)

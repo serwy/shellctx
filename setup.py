@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 import os
-import glob
 from setuptools import setup
 
 from shellctx._version import __version__
-
-def get_dir(d):
-    return glob.glob('%s/*' % d)
 
 with open('README.md', 'rb') as fid:
     LONG_DESCRIPTION = fid.read().decode('utf8')
@@ -22,7 +18,9 @@ setup(name='shellctx',
       package_dir = {},
       package_data = {},
       include_package_data=False,
-      scripts = get_dir('scripts'),
+      entry_points=dict(
+          console_scripts=['ctx=shellctx.__main__']
+      ),
       license='GNU GPLv3',
       long_description=LONG_DESCRIPTION,
       long_description_content_type='text/markdown',
