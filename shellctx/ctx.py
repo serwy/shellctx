@@ -481,24 +481,6 @@ elif cmd == '_delctx':
     if os.path.exists(_log_file):
         os.remove(_log_file)
 
-elif cmd == '_copyctx':
-    assert(key is not None)
-    assert(value is not None)
-    assert(len(value.split()) == 1)
-    _ctx_file = os.path.join(ctx, key + '.json')
-    _log_file = os.path.join(ctx, key + '.log')
-
-    _ctx_file2 = os.path.join(ctx, value + '.json')
-    _log_file2 = os.path.join(ctx, value + '.log')
-
-    assert(not os.path.exists(_ctx_file2))
-    assert(not os.path.exists(_log_file2))
-
-    import shutil
-    shutil.copy(_ctx_file, _ctx_file2)
-    shutil.copy(_log_file, _log_file2)
-
-
 elif cmd == 'version':
     _print_version()
 
