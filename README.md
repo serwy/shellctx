@@ -87,6 +87,8 @@ sorted timestamped (newest on top) entries:
 
 `switch` - switch the context dictionary, or print a list.
 New contexts may be created this way.
+The context dictionary can be chained together using '+' and will show a
+merged dictionary, with changes applied to the first name.
 
     $ ctx switch dev
     switching to "dev" from "main"
@@ -94,6 +96,10 @@ New contexts may be created this way.
     $ ctx switch
     * dev
       main
+
+    $ ctx switch main+dev
+    switching to "main+dev" from "dev"
+
 
 `shell` - uses the key as a command, and values are treated as
 additional keys. The command string is passed to a shell.
@@ -180,6 +186,17 @@ hyphen to read from stdin.
     2020-01-01T17:06:10.234028    DISPLAY = :0
     2020-01-01T17:06:10.234012    HOME = /home/serwy
     2020-01-01T17:06:10.233881    SHELL = /bin/bash
+
+`waitpid` - waits for a PID to finish before exiting, possible displaying a message box.
+
+    # assume PID 5417 is a long-running process
+    $ ctx waitpid 5417 [message]
+
+`message` - displays a graphical message box with a message, along with PID,
+start time, and window elapsed time.
+
+    $ ctx message Hello World     # Tkinter window appears
+
 
 ## Environment Variables
 
